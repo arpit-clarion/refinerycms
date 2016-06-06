@@ -3,8 +3,7 @@ module Refinery
     include Pages::RenderOptions
 
     before_action :find_page, :set_canonical
-    before_action :error_404, if: :action_has_page_finder?,
-                              unless: :current_user_can_view_page?
+    before_action :error_404, :unless => :current_user_can_view_page?
 
     # Save whole Page after delivery
     after_action :write_cache?
