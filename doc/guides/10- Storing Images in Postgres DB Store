@@ -1,0 +1,37 @@
+This Guid is to store the images on the postgres sql datastore
+
+This solution  with the dragonfly-activerecord fork . Just go to config/initializers/refinery/images.rb Here is a code to do it. First follow dragonfly-activerecord fork steps
+
+In Gemfile:
+```
+gem 'dragonfly-activerecord' , git: "git://github.com/arpit-clarion/dragonfly-activerecord.git"
+bundle
+rails generate migration add_dragonfly_storage
+```
+
+In the migration file add this code
+```
+require 'dragonfly-activerecord/migration'
+
+class AddDragonflyStorage < ActiveRecord::Migration
+  include Dragonfly::ActiveRecord::Migration
+end
+```
+
+Run rake db:migrate and add this code:
+
+
+config/initializers/refinery/images.rb
+```
+# encoding: utf-8
+require 'dragonfly-activerecord/store'
+Refinery::Images.configure do |config|
+  #...... Your configuration ....
+  config.custom_backend_class = 'Dragonfly::ActiveRecord::Store'
+  config.custom_backend_opts = {}
+  #...... Your configuration ....
+end
+```
+This will change the whole system folder structure set into database. No need to any buckets .
+
+Keep in mind that this system is for those applications which has less images to store as it generates big chunks in db and it converts images on request time.
